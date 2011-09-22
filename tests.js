@@ -1,4 +1,7 @@
 $(document).ready(function () {
+    if (!window.console) {
+        window.console = { "log": function () {} }; //for IE
+    }
 
     module("Average");
     test("Average 1", function () {
@@ -223,6 +226,48 @@ $(document).ready(function () {
         var beta = Finito.beta(asset, market);
         var res = Finito.treynorRatio(Finito.average(asset), null, riskFree, beta);
         equal(res.toFixed(5), "-0.85714", "Treynor Ratio of -0.85714");
+    });
+
+
+    module("Jensen");
+    test("Jensen 1", function () {
+        var asset = [8, 7, 1, 35, 5, 7, 11, 8];
+        var market = [7, 8, 9, 7, 8, 9, 8, 8];
+        var riskFree = [3, 2, 4, 3, 4, 2, 2, 2];
+        var res = Finito.jensensAlpha(asset, market, riskFree);
+        equal(res.toFixed(5), "53.43750", "Jensen's Alpha of 53.43750");
+    });
+
+
+    module("Downside Deviation");
+    test("Downside Deviation 1", function () {
+        var asset = [-2, 7, 1, 11, 5, -9, 11, 1];
+        var riskFree = [3, 2, 4, 3, 4, 2, 2, 2];
+        var res = Finito.downsideDeviation(asset, riskFree);
+        equal(res.toFixed(5), "4.56550", "Downside Deviation of 4.56550");
+    });
+    
+    test("Downside Deviation 2", function () {
+        var asset = [-2, 7, 1, 11, 5, -9, 11, 1];
+        var riskFree = 2.75;
+        var res = Finito.downsideDeviation(asset, riskFree);
+        equal(res.toFixed(5), "4.56550", "Downside Deviation of 4.56550");
+    });
+
+
+    module("Sortino");
+    test("Sortino 1", function () {
+        var asset = [-2, 7, 1, 11, 5, -9, 11, 1];
+        var riskFree = [3, 2, 4, 3, 4, 2, 2, 2];
+        var res = Finito.sortinoRatio(asset, riskFree);
+        equal(res.toFixed(5), "0.08214", "Sortino Ratio of 0.08214");
+    });
+    
+    test("Sortino 2", function () {
+        var asset = [-2, 7, 1, 11, 5, -9, 11, 1];
+        var riskFree = 2.75;
+        var res = Finito.sortinoRatio(asset, riskFree);
+        equal(res.toFixed(5), "0.08214", "Sortino Ratio of 0.08214");
     });
 
 

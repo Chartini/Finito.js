@@ -137,6 +137,41 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         return (assetReturn - riskFreeReturn) / assetBeta;
     };
     
+    //Return the downside variance against a minimum acceptable return.
+    Finito.downsideVariance = function (asset, minimumReturn) {
+        var i, sum = 0, diff;
+        var avg2 = Finito.average(minimumReturn);
+        for (i = 0; i < asset.length; i++) {
+            diff = (asset[i] - avg2);
+            if (diff < 0) {
+                sum += Math.pow(diff, 2);
+            }
+        }
+        return sum / asset.length;
+    };
+    
+    //Return the downside deviation against a minimum acceptable return.
+    Finito.downsideDeviation = function (asset, minimumReturn) {
+        return Math.sqrt(Finito.downsideVariance(asset, minimumReturn));
+    };
+    
+    //Return the Sortino Ratio of an asset.
+    Finito.sortinoRatio = function (asset, riskFree) {
+        var assetReturn = Finito.average(asset);
+        var riskFreeReturn = Finito.average(riskFree);
+        var downsideRisk = Finito.downsideDeviation(asset, riskFree);
+        return (assetReturn - riskFreeReturn) / downsideRisk;
+    };
+    
+    //Return the Jensen's Alpha (Measure) of an asset.
+    Finito.jensensAlpha = function (asset, market, riskFree, assetBeta) {
+        if (_.isUndefined(assetBeta)) { assetBeta = Finito.beta(asset, market); }
+        var assetReturn = Finito.average(asset);
+        var riskFreeReturn = Finito.average(riskFree);
+        var marketReturn = Finito.average(market);
+        return assetReturn - (riskFreeReturn + (assetBeta * (marketReturn - riskFreeReturn)));
+    };
+    
     //Return the sample variance of a list.
     Finito.sampleVariance = function (sample) {
         if (_.isNumber(sample)) { sample = [sample]; }
@@ -153,5 +188,5 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         if (_.isNumber(sample) || _.isNumber(sample2)) { return 0; }
         return Finito.sumOfMultipliedCodeviations(sample, sample2) / (sample.length - 1);
     };
-
+    
 })();
