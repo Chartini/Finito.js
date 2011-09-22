@@ -22,20 +22,16 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-(function() {
+(function () {
     var root = this, Finito = {};
-    
     root.Finito = Finito;
+    Finito.VERSION = '0.0.3';
     
-    Finito.VERSION = '0.0.1';
-
     //Return the mean of a list
     Finito.average = function (population) {
-        if (population === null) return null;
-        
-        if (_.isNumber(population)) return population;
-        
-        var sum = _.reduce(population, function(memo, num) {
+        if (population === null) { return null; }
+        if (_.isNumber(population)) { return population; }
+        var sum = _.reduce(population, function (memo, num) {
             return memo + num;
         }, 0);
         return sum / population.length;
@@ -43,9 +39,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     
     //Return the difference between the max and min values of a list.
     Finito.range = function (population) {
-        if (_.isNumber(population)) return 0;
-        if (population.length === 0) return 0;
-        
+        if (_.isNumber(population)) { return 0; }
+        if (population.length === 0) { return 0; }
         var max = Math.max.apply(Math, population);
         var min = Math.min.apply(Math, population);
         return max - min;
@@ -57,14 +52,14 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         return _.reduce(population, function (memo, num) {
             return memo + Math.pow(num - avg, 2);
         }, 0);
-    }
+    };
     
     //Return the sum of multiplied codeviations of a list.
     Finito.sumOfMultipliedCodeviations = function (population, population2) {
         var i, avg, avg2, sum = 0;
         
         if (_.isArray(population) && _.isArray(population2)) {
-            if (population.length != population2.length) {
+            if (population.length !== population2.length) {
                 throw new Error("Argument lengths do not match.");
             }
             
@@ -72,23 +67,23 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
             avg2 = Finito.average(population2);
         
             for (i = 0; i < population.length; i++) {
-                sum += ( (population[i] - avg) * (population2[i] - avg2) );
+                sum += ((population[i] - avg) * (population2[i] - avg2));
             }
             
             return sum;
         } else {
             return 0;
         }
-    };    
+    };
     
     //Support function for population and sample variance.
-    Finito._variance = function(list, divisor) {
+    Finito._variance = function (list, divisor) {
         return Finito.sumOfSquaredDeviations(list) / divisor;
     };
     
     //Return the population variance of a list.
     Finito.populationVariance = function (population) {
-        if (_.isNumber(population)) population = [population];
+        if (_.isNumber(population)) {population = [population]; }
         return Finito._variance(population, population.length);
     };
     
@@ -99,7 +94,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     
     //Return the population covariance of a list.
     Finito.populationCovariance = function (population, population2) {
-        if (_.isNumber(population) || _.isNumber(population2)) return 0;
+        if (_.isNumber(population) || _.isNumber(population2)) { return 0; }
         return Finito.sumOfMultipliedCodeviations(population, population2) / population.length;
     };
     
@@ -110,14 +105,14 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     
     //Return the Sharpe Ratio of an asset vs. the risk-free return. Standard deviation argument is optional.
     Finito.sharpeRatio = function (asset, riskFree, standardDeviation) {
-        var i, avg, avg2, sum = 0, excessReturns = [];
+        var i, excessReturns = [];
         if (_.isArray(riskFree)) {
-            if (asset.length != riskFree.length) {
+            if (asset.length !== riskFree.length) {
                 throw new Error("Argument lengths do not match.");
             }
             
             for (i = 0; i < asset.length; i++) {
-                excessReturns.push( (asset[i] - riskFree[i]) );
+                excessReturns.push((asset[i] - riskFree[i]));
             }
             
             if (_.isUndefined(standardDeviation)) {
@@ -134,8 +129,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     };
     
     //Return the Treynor Ratio of an asset vs. the risk-free return. Beta argument is optional if market returns are supplied.
-    Finito.treynorRatio = function(asset, market, riskFree, assetBeta) {
-        if (_.isUndefined(assetBeta)) assetBeta = Finito.beta(asset, market);
+    Finito.treynorRatio = function (asset, market, riskFree, assetBeta) {
+        if (_.isUndefined(assetBeta)) { assetBeta = Finito.beta(asset, market); }
         var assetReturn = Finito.average(asset);
         var riskFreeReturn = Finito.average(riskFree);
         
@@ -144,7 +139,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     
     //Return the sample variance of a list.
     Finito.sampleVariance = function (sample) {
-        if (_.isNumber(sample)) sample = [sample];
+        if (_.isNumber(sample)) { sample = [sample]; }
         return Finito._variance(sample, sample.length - 1);
     };
     
@@ -155,9 +150,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     
     //Return the sample covariance of a list.
     Finito.sampleCovariance = function (sample, sample2) {
-        if (_.isNumber(sample) || _.isNumber(sample2)) return 0;
+        if (_.isNumber(sample) || _.isNumber(sample2)) { return 0; }
         return Finito.sumOfMultipliedCodeviations(sample, sample2) / (sample.length - 1);
     };
-
 
 })();
