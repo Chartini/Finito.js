@@ -29,11 +29,12 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     
     //Return the mean of a list
     Finito.average = function (population) {
+        var i, sum = 0;
         if (population === null) { return null; }
         if (_.isNumber(population)) { return population; }
-        var sum = _.reduce(population, function (memo, num) {
-            return memo + num;
-        }, 0);
+        for (i = 0; i < population.length; i++) {
+            sum += population[i];
+        }
         return sum / population.length;
     };
     
@@ -48,10 +49,11 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     
     //Return the sum of squared deviations of a list.
     Finito.sumOfSquaredDeviations = function (population) {
-        var avg = Finito.average(population);
-        return _.reduce(population, function (memo, num) {
-            return memo + Math.pow(num - avg, 2);
-        }, 0);
+        var i, sum = 0, avg = Finito.average(population);
+        for (i = 0; i < population.length; i++) {
+            sum += Math.pow(population[i] - avg, 2);
+        }
+        return sum;
     };
     
     //Return the sum of multiplied codeviations of a list.
